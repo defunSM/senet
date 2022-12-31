@@ -5,11 +5,7 @@ import {faker} from '@faker-js/faker'
 const PIECES = [1,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 const MAX = 4 // max number of jumps: 1,4,5 will result in rolling again
 
-// Each square grid on the sennet board
-function Square(props: any) {
-  const bgColor = props.index % 2 === 0 ? "bg-[#AD8E70]" : "bg-[#FF6E31]"
-  return <button onClick={props.onClick} className={"m-1 py-4 text-black text-center drop-shadow-sm rounded-lg max-w-xs transition-all hover:scale-110 font-bold " + bgColor}>{props.pieces[props.index]}</button>
-}
+
 
 // checks if the move is valid
 function checkValidMove(playerId: number, newPieceLocation: number, pieces: any) {
@@ -59,8 +55,39 @@ interface Board {
 function createBoardGrid(boardState: any, setBoardState: any){
 
   function handleSquareSelection(index: number) {
-    setBoardState({...boardState, selectedPiece: index})
+    if (boardState.playerTurn != boardState.pieces[index]) { return }
+    if(boardState.waitingForSelection){
+      // changes the player turn, updates board state
+      const nextPlayerTurn = boardState.playerTurn===1 ? 2 : 1
+      const newPieces = movePiece(boardState.playerTurn, index, boardState.roll, boardState.pieces)
+      setBoardState({...boardState, waitingForSelection: false, selectedPiece: index, playerTurn: nextPlayerTurn, pieces: newPieces})
+  
+    }
+  }
 
+  // Each square grid on the sennet board
+  function Square(props: any) {
+    const greenMarble = <span className="rounded-full bg-[url('/green_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
+    const redMarble = <span className="rounded-full bg-[url('/red_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
+
+    
+    // display the image for the marble
+    let displayMarble;
+    switch(boardState.pieces[props.index]){
+      case 1:
+        displayMarble = greenMarble
+        break;
+      case 2:
+        displayMarble = redMarble
+        break;
+      default:
+        displayMarble = <div className="p-5"></div>
+    }
+
+    const marbles = boardState.pieces[props.index] === 1 ? greenMarble : redMarble
+
+    const bgColor = props.index % 2 === 0 ? "bg-[url('/blacktexture.jpg')]" : "bg-[#FF6E31]"
+    return <button onClick={props.onClick} className={"m-1 py-4 text-black text-center drop-shadow-sm rounded-lg max-w-xs transition-all font-bold " + bgColor}>{/* {boardState.pieces[props.index]} */} {displayMarble}</button>
   }
 
   // setup the senet board
@@ -68,7 +95,7 @@ function createBoardGrid(boardState: any, setBoardState: any){
   const boardGrid = boardPositions.map((_element, index) => {
 
     const uniqueId = uuidv4()
-    return <Square key={uniqueId} index={index} pieces={boardState.pieces} onClick={()=>handleSquareSelection(index)}></Square>
+    return <Square key={uniqueId} index={index} onClick={()=>handleSquareSelection(index)}></Square>
 
   })
   
@@ -93,6 +120,12 @@ function Board(props: any) {
   }, [boardState])
 
   const { firstRow, secondRow, thirdRow } = createBoardGrid(boardState, setBoardState)
+  
+  function handleButtonClick() {
+    if(!boardState.waitingForSelection){
+      setBoardState({...boardState, roll: roll(MAX), waitingForSelection: true})
+    }
+  }
 
   return (
   <div className="bg-[#FFEBB7] m-10 rounded-lg">
@@ -100,8 +133,11 @@ function Board(props: any) {
       <div className="">{secondRow}</div>
       <div className="">{thirdRow}</div>
 
-      <button onClick={()=>setBoardState({...boardState, roll: roll(MAX), waitingForSelection: true})}  className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150">ROLL</button>
-      {boardState.waitingForSelection ? <><div className="text-black justify-self-center">You rolled a {boardState.roll} </div><div className="text-black">Select a piece to move</div></> : <></>}
+      <button onClick={()=>handleButtonClick()}  className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150">ROLL</button>
+      {boardState.waitingForSelection ? <>
+
+      <div className="text-black">Player {boardState.playerTurn}:</div>
+        <div className="text-black justify-self-center">You rolled a {boardState.roll} </div><div className="text-black">Select a piece to move</div></> : <></>}
   </div>
   )
 }
@@ -110,10 +146,10 @@ function game (props: any) {
   return (<div className="grid bg-[#243763] h-screen">
     
     <div className="bg-[#FFEBB7] m-auto justify-self-center rounded-lg text-4xl text-black mt-10 p-5 drop-shadow-md shadow-black transition-all hover:scale-110 "><span>Senet</span></div> 
-    <div className=" grid bg-[#FFEBB7] rounded-lg m-10 drop-shadow-xl shadow-white hover:scale-105 transition-all"><Board></Board>
+    <div className=" grid bg-[#FFEBB7] rounded-lg m-10 drop-shadow-xl shadow-white transition-all"><Board></Board>
     </div>
 
-    <div className="m-auto">Dolor fuga dignissimos. Asperiores maxime numquam consectetur ex quae. Iste odio rem minima expedita voluptas. Dolorum nemo nihil iure adipisci dolores.</div>
+    <div className="m-auto py-100">Dolor fuga dignissimos. Asperiores maxime numquam consectetur ex quae. Iste odio rem minima expedita voluptas. Dolorum nemo nihil iure adipisci dolores.</div>
   </div>)
 }
 
