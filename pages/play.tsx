@@ -36,8 +36,8 @@ function Play (props: any)  {
     return (
         <div className="h-screen grid bg-[#FFEBB7]">
         <div className="bg-yellow-400 m-10 rounded-lg transition-all drop-shadow-md">        
-        <div className="grid justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-t-lg hover:translate-y-8 transition-all">
-                <div className="mt-10 mb-10 p-1 text-2xl justify-center grid border-yellow-300 border-2 bg-yellow-300 text-black rounded-lg drop-shadow-md">Choose a character</div>
+                <div className="mt-10 mb-1 p-1 text-2xl justify-center grid border-yellow-300 border-2 bg-yellow-300 text-black rounded-lg drop-shadow-md font-semibold">Choose a character</div>
+                <div className="pt-5 hover:pb-5 grid justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-t-lg hover:translate-y-8 transition-all">
                 <div className="mb-3 grid justify-center">
                 <Image className="rounded-lg hover:scale-110 hover:contrast-125 transition-all drop-shadow-md" src={avatarUrl} width={120} height={120} alt="player avatar"></Image>
                 </div>
@@ -48,10 +48,10 @@ function Play (props: any)  {
             <div className="mt-5 mb-5 justify-center flex">
                         <div className="mr-5 p-2 bg-yellow-300 text-black rounded-lg flex drop-shadow-md hover:scale-110 transition-all">
                 <Image className="" src="/left-arrow.svg" width={30} height={30} alt="left-arrow"></Image>
-                        <span className="mt-0.5 ml-1">Go back</span>
+                        <span className="mt-0.5 ml-1 font-semibold">Go back</span>
                     </div>
                         <div className="mr-5 p-2 bg-yellow-300 text-black rounded-lg flex drop-shadow-md transition-all hover:scale-110">
-                        <span className="mt-0.5 mr-2">Next</span>
+                        <span className="mt-0.5 mr-2 font-semibold">Next</span>
                 <Image className="" src="/right-arrow.svg" width={30} height={30} alt="right-arrow"></Image>
                     </div>
                 </div>
