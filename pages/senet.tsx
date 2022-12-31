@@ -128,7 +128,7 @@ function Board(props: any) {
   }
 
   return (
-  <div className="bg-[#FFEBB7] m-10 rounded-lg">
+  <div className="bg-[url('/whitenoise.png')] bg-cover m-10 rounded-lg">
       <div className="">{firstRow}</div>
       <div className="">{secondRow}</div>
       <div className="">{thirdRow}</div>
@@ -136,8 +136,8 @@ function Board(props: any) {
       <button onClick={()=>handleButtonClick()}  className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150">ROLL</button>
       {boardState.waitingForSelection ? <>
 
-      <div className="text-black">Player {boardState.playerTurn}:</div>
-        <div className="text-black justify-self-center">You rolled a {boardState.roll} </div><div className="text-black">Select a piece to move</div></> : <></>}
+      <div className="text-black font-bold ml-5">Player {boardState.playerTurn}:</div>
+        <div className="text-black justify-self-center font-semibold ml-8">You rolled a {boardState.roll} </div><div className="text-black font-semibold ml-8">Select a piece to move</div></> : <></>}
   </div>
   )
 }
@@ -146,7 +146,7 @@ function game (props: any) {
   return (<div className="grid bg-[#243763] h-screen">
     
     <div className="bg-[#FFEBB7] m-auto justify-self-center rounded-lg text-4xl text-black mt-10 p-5 drop-shadow-md shadow-black transition-all hover:scale-110 "><span>Senet</span></div> 
-    <div className=" grid bg-[#FFEBB7] rounded-lg m-10 drop-shadow-xl shadow-white transition-all"><Board></Board>
+    <div className=" grid bg-[url('/whitenoise.png')] bg-cover rounded-lg m-10 drop-shadow-xl shadow-white transition-all"><Board></Board>
     </div>
 
     <div className="m-auto py-100">Dolor fuga dignissimos. Asperiores maxime numquam consectetur ex quae. Iste odio rem minima expedita voluptas. Dolorum nemo nihil iure adipisci dolores.</div>
