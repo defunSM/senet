@@ -6,37 +6,62 @@ const PIECES = [1,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 const MAX = 4 // max number of jumps: 1,4,5 will result in rolling again
 
 
-
+interface Board {
+  pieces: number[]
+  selectedPiece: number
+  playerTurn: number 
+  roll: number
+  phase: string
+  validMoves: number[]
+  waitingForSelection: boolean
+}
 // checks if the move is valid
-function checkValidMove(playerId: number, newPieceLocation: number, pieces: any) {
+function checkValidMove(boardState: Board, selectedPieceLocation: number) {
+  const playerId = boardState.playerTurn
+  const newPieceLocation = selectedPieceLocation + boardState.roll
+  const pieces = boardState.pieces
+
+  if (boardState.playerTurn != boardState.pieces[selectedPieceLocation]) { return }
   if (pieces[newPieceLocation]===0){ return true }
-  if (pieces[newPieceLocation]!=playerId && pieces[newPieceLocation+1]!=playerId){
+  if (pieces[newPieceLocation]===playerId) { 
     return false
   }
+  // if ((pieces[newPieceLocation+1] != (playerId || 0)) && (pieces[newPieceLocation] != playerId)) {
+  //   return false
+  // }
+
+  if (pieces[newPieceLocation]!=playerId) { return true}
+
   return true
 }
 
-function movePiece(playerId: number, pieceId: number, jumps: number, pieces: any) {
-  const newPieceLocation = pieceId + jumps
-  if (checkValidMove(playerId, newPieceLocation, pieces)){
-    if (pieces[newPieceLocation]!=0 && pieces[newPieceLocation]!=playerId) 
-    { 
-      pieces[pieceId] = pieces[newPieceLocation] 
-      return pieces
-    } 
-    else 
-    { 
-      pieces[pieceId] = 0; 
-    }
+function moveMarble(boardState: Board, currentPieceLocation: number) {
+  const playerId = boardState.playerTurn
+  const newPieceLocation = currentPieceLocation + boardState.roll
+  const pieces = boardState.pieces
 
-    pieces[newPieceLocation] = playerId
-    // console.log(pieces)
-    return pieces
+  // remove the piece from the previous location
+  pieces[currentPieceLocation] = 0;
+  // move piece up to its new spot
+
+  switch(pieces[newPieceLocation]) {
+    // if the new location has no marble there
+    case 0:
+      pieces[newPieceLocation] = playerId;
+      break;
+    // if there is a marble there swap them
+    default:
+      const temp = pieces[newPieceLocation]
+      pieces[newPieceLocation] = playerId;
+      pieces[currentPieceLocation] = temp;
+      
   }
+    
+  return pieces
 }
 
 // determines how many spaces the piece is going to move
-function roll(max: number) {
+function roll(max: number = 4) {
 
   const randomInteger: number = Math.floor(Math.random() * max)
   if (randomInteger === 0){ return 5 }
@@ -44,28 +69,38 @@ function roll(max: number) {
   return randomInteger
 }
 
-interface Board {
-  pieces: number[]
-  selectedPiece: number
-  playerTurn: number 
-  roll: number
-  waitingForSelection: boolean
-}
 
 function createBoardGrid(boardState: any, setBoardState: any){
-
-  function handleSquareSelection(index: number) {
-    if (boardState.playerTurn != boardState.pieces[index]) { return }
-    if(boardState.waitingForSelection){
-      // changes the player turn, updates board state
-      const nextPlayerTurn = boardState.playerTurn===1 ? 2 : 1
-      const newPieces = movePiece(boardState.playerTurn, index, boardState.roll, boardState.pieces)
-      setBoardState({...boardState, waitingForSelection: false, selectedPiece: index, playerTurn: nextPlayerTurn, pieces: newPieces})
   
+// ------------------ Game Logic ---------------------------------------
+
+  // core logic for updating the board state
+  function updateGameState(selectedPiece: number) {
+    const phase = boardState.phase
+    switch(phase){
+      case "selection":
+        const nextPlayerTurn = boardState.playerTurn === 1 ? 2 : 1
+        const newPieces = moveMarble(boardState, selectedPiece)
+        setBoardState({...boardState, waitingForSelection: false, selectedPiece: selectedPiece, playerTurn: nextPlayerTurn, pieces: newPieces, phase: "roll"})
+        break;
+
     }
   }
 
-  // Each square grid on the sennet board
+  function handleSquareSelection(selectedPiece: number) {
+    // if a valid move can be made with selected piece: piece is moved otherwise nothing happens
+    switch(checkValidMove(boardState, selectedPiece)) {
+      case true:
+        updateGameState(selectedPiece);
+        break;
+      case false:
+        break;
+    }
+  }
+
+// ------------------------ styling for components + creating the square grids ----------------
+
+  // Each square grid on the senet board
   function Square(props: any) {
     const greenMarble = <span className="rounded-full bg-[url('/green_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
     const redMarble = <span className="rounded-full bg-[url('/red_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
@@ -84,7 +119,7 @@ function createBoardGrid(boardState: any, setBoardState: any){
         displayMarble = <div className="p-5"></div>
     }
 
-    const marbles = boardState.pieces[props.index] === 1 ? greenMarble : redMarble
+    // const marbles = boardState.pieces[props.index] === 1 ? greenMarble : redMarble
 
     const bgColor = props.index % 2 === 0 ? "bg-[url('/blacktexture.jpg')]" : "bg-[#FF6E31]"
     return <button onClick={props.onClick} className={"m-1 py-4 text-black text-center drop-shadow-sm rounded-lg max-w-xs transition-all font-bold " + bgColor}>{/* {boardState.pieces[props.index]} */} {displayMarble}</button>
@@ -111,19 +146,17 @@ function createBoardGrid(boardState: any, setBoardState: any){
 // The entire 30 squares on the sennet board, 10 on each row
 function Board(props: any) {
 
-  const [boardState, setBoardState] = useState({pieces: PIECES, selectedPiece: 0, playerTurn: 1, roll: -1, waitingForSelection: false})
+  const [boardState, setBoardState] = useState({pieces: PIECES, selectedPiece: 0, playerTurn: 1, roll: -1, waitingForSelection: false, phase: "roll", validMoves: []})
 
   useEffect(()=>{
     console.log(boardState)
-    
-
   }, [boardState])
 
   const { firstRow, secondRow, thirdRow } = createBoardGrid(boardState, setBoardState)
   
   function handleButtonClick() {
-    if(!boardState.waitingForSelection){
-      setBoardState({...boardState, roll: roll(MAX), waitingForSelection: true})
+    if(boardState.phase==='roll'){
+      setBoardState({...boardState, roll: roll(MAX), waitingForSelection: true, phase: "selection"})
     }
   }
 
