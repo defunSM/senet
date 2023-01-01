@@ -20,19 +20,20 @@ function checkValidMove(boardState: Board, selectedPieceLocation: number) {
   const playerTurn = boardState.playerTurn
   const newPieceLocation = selectedPieceLocation + boardState.roll
   const pieces = boardState.pieces
-
-  if (boardState.playerTurn != boardState.pieces[selectedPieceLocation]) { return }
-  if (pieces[newPieceLocation]===0){ return true }
-  if (pieces[newPieceLocation]===playerTurn) { 
-    return false
+  
+  // check to see if player is not trying to move someone else's piece
+  if (playerTurn != pieces[selectedPieceLocation]) { return false }
+  
+  switch(pieces[newPieceLocation]) {
+    // when there is nothing on the square
+    case 0:
+      return true;
+    // your own piece is on the square you are trying to move to
+    case playerTurn:
+      return false;
+    default:
+      return true;
   }
-  // if ((pieces[newPieceLocation+1] != (playerId || 0)) && (pieces[newPieceLocation] != playerId)) {
-  //   return false
-  // }
-
-  if (pieces[newPieceLocation]!=playerTurn) { return true}
-
-  return true
 }
 
 function moveMarble(boardState: Board, currentPieceLocation: number) {
