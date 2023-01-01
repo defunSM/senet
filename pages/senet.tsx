@@ -17,20 +17,20 @@ interface Board {
 }
 // checks if the move is valid
 function checkValidMove(boardState: Board, selectedPieceLocation: number) {
-  const playerId = boardState.playerTurn
+  const playerTurn = boardState.playerTurn
   const newPieceLocation = selectedPieceLocation + boardState.roll
   const pieces = boardState.pieces
 
   if (boardState.playerTurn != boardState.pieces[selectedPieceLocation]) { return }
   if (pieces[newPieceLocation]===0){ return true }
-  if (pieces[newPieceLocation]===playerId) { 
+  if (pieces[newPieceLocation]===playerTurn) { 
     return false
   }
   // if ((pieces[newPieceLocation+1] != (playerId || 0)) && (pieces[newPieceLocation] != playerId)) {
   //   return false
   // }
 
-  if (pieces[newPieceLocation]!=playerId) { return true}
+  if (pieces[newPieceLocation]!=playerTurn) { return true}
 
   return true
 }
