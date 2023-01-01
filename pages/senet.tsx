@@ -6,6 +6,7 @@ const PIECES = [1,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 const MAX = 4 // max number of jumps: 1,4,5 will result in rolling again
 
 
+
 interface Board {
   pieces: number[]
   selectedPiece: number
@@ -13,9 +14,10 @@ interface Board {
   roll: number
   phase: string
   validMoves: number[]
-  waitingForSelection: boolean
+  score: number[]
 }
-// checks if the move is valid
+
+// checks if the piece selected can be moved there aka not being blocked
 function checkValidMove(boardState: Board, selectedPieceLocation: number) {
   const playerTurn = boardState.playerTurn
   const newPieceLocation = selectedPieceLocation + boardState.roll
@@ -31,9 +33,24 @@ function checkValidMove(boardState: Board, selectedPieceLocation: number) {
     // your own piece is on the square you are trying to move to
     case playerTurn:
       return false;
+
     default:
       return true;
   }
+}
+
+// BUG: the initial validMoves are always [2,4,6,8] for some reason
+function findValidMoves(boardState: Board) {
+  const validMoves = boardState.pieces.map((piece, index) => {
+    if(checkValidMove(boardState, index)){
+      return index
+    } else {
+      return false
+    }
+  })
+
+  return validMoves.filter(Boolean)
+
 }
 
 function moveMarble(boardState: Board, currentPieceLocation: number) {
@@ -82,7 +99,7 @@ function createBoardGrid(boardState: any, setBoardState: any){
       case "selection":
         const nextPlayerTurn = boardState.playerTurn === 1 ? 2 : 1
         const newPieces = moveMarble(boardState, selectedPiece)
-        setBoardState({...boardState, waitingForSelection: false, selectedPiece: selectedPiece, playerTurn: nextPlayerTurn, pieces: newPieces, phase: "roll"})
+        setBoardState({...boardState, selectedPiece: selectedPiece, playerTurn: nextPlayerTurn, pieces: newPieces, phase: "roll"})
         break;
 
     }
@@ -147,7 +164,7 @@ function createBoardGrid(boardState: any, setBoardState: any){
 // The entire 30 squares on the sennet board, 10 on each row
 function Board(props: any) {
 
-  const [boardState, setBoardState] = useState({pieces: PIECES, selectedPiece: 0, playerTurn: 1, roll: -1, waitingForSelection: false, phase: "roll", validMoves: []})
+  const [boardState, setBoardState] = useState({pieces: PIECES, selectedPiece: 0, playerTurn: 1, roll: -1, phase: "roll", validMoves: []})
 
   useEffect(()=>{
     console.log(boardState)
@@ -157,7 +174,7 @@ function Board(props: any) {
   
   function handleButtonClick() {
     if(boardState.phase==='roll'){
-      setBoardState({...boardState, roll: roll(MAX), waitingForSelection: true, phase: "selection"})
+      setBoardState({...boardState, roll: roll(MAX), phase: "selection", validMoves: findValidMoves(boardState)})
     }
   }
 
@@ -168,7 +185,7 @@ function Board(props: any) {
       <div className="">{thirdRow}</div>
 
       <button onClick={()=>handleButtonClick()}  className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150">ROLL</button>
-      {boardState.waitingForSelection ? <>
+      {boardState.phase==='selection' ? <>
 
       <div className="text-black font-bold ml-5">Player {boardState.playerTurn}:</div>
         <div className="text-black justify-self-center font-semibold ml-8">You rolled a {boardState.roll} </div><div className="text-black font-semibold ml-8">Select a piece to move</div></> : <></>}
