@@ -2,10 +2,11 @@ import {v4 as uuidv4} from 'uuid'
 import { useState, useEffect } from 'react'
 import {faker} from '@faker-js/faker'
 
-const PIECES = [1,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+const PIECES = [1,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] // 1 and 2 represents each players respective marbles
 const MAX = 4 // max number of jumps: 1,4,5 will result in rolling again
-
-
+const WIN_CONDITION_SCORE = 5 // score needed to win game
+const BOARD_LENGTH = 30 // number of grids on the board
 
 interface Board {
   pieces: number[]
@@ -15,6 +16,7 @@ interface Board {
   phase: string
   validMoves: number[]
   score: number[]
+  winner: number
 }
 
 // checks if the piece selected can be moved there aka not being blocked
@@ -39,18 +41,21 @@ function checkValidMove(boardState: Board, selectedPieceLocation: number) {
   }
 }
 
+function isDefined<T>(argument: T | undefined): argument is T {
+    return argument !== undefined
+}
 // BUG: the initial validMoves are always [2,4,6,8] for some reason
 function findValidMoves(boardState: Board) {
-  const validMoves = boardState.pieces.map((piece, index) => {
+  const validMoves: number[] = boardState.pieces.map((_piece, index) => {
     if(checkValidMove(boardState, index)){
       return index
     } else {
-      return false
+      return undefined
     }
-  })
+  }).filter(isDefined)
 
-  return validMoves.filter(Boolean)
-
+  console.log(validMoves)
+  return validMoves
 }
 
 function moveMarble(boardState: Board, currentPieceLocation: number) {
@@ -161,20 +166,61 @@ function createBoardGrid(boardState: any, setBoardState: any){
   return { firstRow, secondRow, thirdRow }
 }
 
+// checks if a marble has made it off the board
+//
+
+
+function checkMarbleOutOfBounds(pieces: number[]) {
+  if(pieces.length > BOARD_LENGTH) { 
+    return true 
+  } else { 
+    return false
+  }
+}
+
 // The entire 30 squares on the sennet board, 10 on each row
-function Board(props: any) {
+function Board() {
 
-  const [boardState, setBoardState] = useState({pieces: PIECES, selectedPiece: 0, playerTurn: 1, roll: -1, phase: "roll", validMoves: []})
-
+  const [boardState, setBoardState] = useState({pieces: PIECES, selectedPiece: 0, playerTurn: 1, roll: -1, phase: "roll", validMoves: [1], score: [0, 0], winner: -1})
+  
+  // handles changes to state when rolling
   useEffect(()=>{
+    const validMoves: number[] = findValidMoves(boardState)
+    setBoardState({...boardState, validMoves: validMoves})
+  }, [boardState.roll])
+
+  // checks scoring and if there is a winner
+  useEffect(()=>{
+    if(checkMarbleOutOfBounds(boardState.pieces)){
+      // player who manages to get a piece off the board
+      const playerWhoScored = boardState.pieces.slice(BOARD_LENGTH).reduce((acc, val) => acc + val , 0)
+      console.log("Player " + playerWhoScored + " scored")
+      
+      // increases that player's score by 1
+      const currScore = boardState.score
+      currScore[playerWhoScored-1] += 1
+
+      // check for winner
+      let winner;
+      if (currScore[0] === WIN_CONDITION_SCORE){
+        winner = 1
+      } else if (currScore[1] === WIN_CONDITION_SCORE) {
+        winner = 2
+      } else {
+        winner = boardState.winner
+      }
+      
+      // resets the board removing the piece that is out of the board from the pieces array and updates score
+      setBoardState({...boardState, pieces: boardState.pieces.slice(0, BOARD_LENGTH-1), score: currScore, winner: winner})
+    }
     console.log(boardState)
   }, [boardState])
 
   const { firstRow, secondRow, thirdRow } = createBoardGrid(boardState, setBoardState)
   
-  function handleButtonClick() {
-    if(boardState.phase==='roll'){
-      setBoardState({...boardState, roll: roll(MAX), phase: "selection", validMoves: findValidMoves(boardState)})
+  function handleRollClick() {
+    if (boardState.phase === 'roll') {
+      setBoardState({...boardState, roll: roll(MAX), phase: "selection"})
     }
   }
 
@@ -184,7 +230,7 @@ function Board(props: any) {
       <div className="">{secondRow}</div>
       <div className="">{thirdRow}</div>
 
-      <button onClick={()=>handleButtonClick()}  className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150">ROLL</button>
+      <button onClick={()=>handleRollClick()}  className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150">ROLL</button>
       {boardState.phase==='selection' ? <>
 
       <div className="text-black font-bold ml-5">Player {boardState.playerTurn}:</div>
@@ -193,7 +239,7 @@ function Board(props: any) {
   )
 }
 
-function game (props: any) {
+function game () {
   return (<div className="grid bg-[#243763] h-screen">
     
     <div className="bg-[#FFEBB7] m-auto justify-self-center rounded-lg text-4xl text-black mt-10 p-5 drop-shadow-md shadow-black transition-all hover:scale-110 "><span>Senet</span></div> 
