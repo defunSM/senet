@@ -1,10 +1,11 @@
 import {v4 as uuidv4} from 'uuid'
 import { useState, useEffect } from 'react'
-import {faker} from '@faker-js/faker'
+// import {faker} from '@faker-js/faker'
 
 
 const PIECES = [1,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] // 1 and 2 represents each players respective marbles
-const MAX = 4 // max number of jumps: 1,4,5 will result in rolling again
+const MAX_ROLL = 4 // max number of jumps: 1,4,5 will result in rolling again
+const DEFAULT_ROLL = 5 // when 0 is rolled which means all pieces are face down which means piece can move 5 squares
 const WIN_CONDITION_SCORE = 5 // score needed to win game
 const BOARD_LENGTH = 30 // number of grids on the board
 
@@ -44,7 +45,7 @@ function checkValidMove(boardState: Board, selectedPieceLocation: number) {
 function isDefined<T>(argument: T | undefined): argument is T {
     return argument !== undefined
 }
-// BUG: the initial validMoves are always [2,4,6,8] for some reason
+
 function findValidMoves(boardState: Board) {
   const validMoves: number[] = boardState.pieces.map((_piece, index) => {
     if(checkValidMove(boardState, index)){
@@ -54,14 +55,21 @@ function findValidMoves(boardState: Board) {
     }
   }).filter(isDefined)
 
-  console.log(validMoves)
   return validMoves
 }
 
-function moveMarble(boardState: Board, currentPieceLocation: number) {
+function moveMarble(boardState: Board, currentPieceLocation: number, aiRoll: number = 0) {
   const playerId = boardState.playerTurn
-  const newPieceLocation = currentPieceLocation + boardState.roll
-  const pieces = boardState.pieces
+  
+  // determine which roll to use depending on who is moving the marble
+  let newPieceLocation
+  if (aiRoll === 0) {
+    newPieceLocation = currentPieceLocation + boardState.roll
+  } else {
+    newPieceLocation = currentPieceLocation + aiRoll
+  }
+
+  const pieces: number[] = boardState.pieces
 
   // remove the piece from the previous location
   pieces[currentPieceLocation] = 0;
@@ -74,7 +82,7 @@ function moveMarble(boardState: Board, currentPieceLocation: number) {
       break;
     // if there is a marble there swap them
     default:
-      const temp = pieces[newPieceLocation]
+      const temp: number = pieces[newPieceLocation]=== undefined ? 0 : pieces[newPieceLocation]
       pieces[newPieceLocation] = playerId;
       pieces[currentPieceLocation] = temp;
       
@@ -83,15 +91,41 @@ function moveMarble(boardState: Board, currentPieceLocation: number) {
   return pieces
 }
 
+
 // determines how many spaces the piece is going to move
 function roll(max: number = 4) {
 
-  const randomInteger: number = Math.floor(Math.random() * max)
-  if (randomInteger === 0){ return 5 }
+  const newRoll: number = Math.floor(Math.random() * max)
+  if (newRoll === 0) { 
+    return DEFAULT_ROLL
+  } else {
+    return newRoll
+  }
   
-  return randomInteger
 }
 
+// moves the marble for the ai
+function moveMarbleForAi(boardState: Board){
+  // get valid moves
+  const validAiMoves: number[] = findValidMoves(boardState)
+  
+  // if no moves to do return undefined otherwise continues to select a marble
+  if (validAiMoves.length === 0) { return undefined }
+
+  // select one of the valid moves
+  const aiRandomSelectMarble: number = Math.floor(Math.random() * validAiMoves.length)
+  const aiChosenMarble = validAiMoves[aiRandomSelectMarble]
+
+  // normal move marble similar to player
+  const newPieces: number[] = moveMarble(boardState, aiChosenMarble, roll(MAX_ROLL))
+
+  return newPieces
+}
+
+// get the next player
+function getNextPlayerTurn(boardState: Board) {
+  return boardState.playerTurn === 1 ? 2 : 1
+}
 
 function createBoardGrid(boardState: any, setBoardState: any){
   
@@ -102,8 +136,8 @@ function createBoardGrid(boardState: any, setBoardState: any){
     const phase = boardState.phase
     switch(phase){
       case "selection":
-        const nextPlayerTurn = boardState.playerTurn === 1 ? 2 : 1
-        const newPieces = moveMarble(boardState, selectedPiece)
+        const nextPlayerTurn: number = getNextPlayerTurn(boardState)
+        const newPieces: number[] = moveMarble(boardState, selectedPiece)
         setBoardState({...boardState, selectedPiece: selectedPiece, playerTurn: nextPlayerTurn, pieces: newPieces, phase: "roll"})
         break;
 
@@ -167,9 +201,6 @@ function createBoardGrid(boardState: any, setBoardState: any){
 }
 
 // checks if a marble has made it off the board
-//
-
-
 function checkMarbleOutOfBounds(pieces: number[]) {
   if(pieces.length > BOARD_LENGTH) { 
     return true 
@@ -177,6 +208,8 @@ function checkMarbleOutOfBounds(pieces: number[]) {
     return false
   }
 }
+
+// GameState -> Player 1 Need to click Roll -> Player Select Piece -> Player Validation -> AI Move
 
 // The entire 30 squares on the sennet board, 10 on each row
 function Board() {
@@ -186,8 +219,18 @@ function Board() {
   // handles changes to state when rolling
   useEffect(()=>{
     const validMoves: number[] = findValidMoves(boardState)
-    setBoardState({...boardState, validMoves: validMoves})
-  }, [boardState.roll])
+    if(boardState.playerTurn === 2) {
+      const pieces: (number[] | undefined) = moveMarbleForAi(boardState)
+      console.log(pieces)
+      if (pieces) { 
+        setBoardState({ ...boardState, pieces: pieces, playerTurn: 1 })
+      } else {
+        setBoardState({ ...boardState, playerTurn: getNextPlayerTurn(boardState)})
+      }
+    } else {
+      setBoardState({...boardState, validMoves: validMoves})
+    }
+  }, [boardState.playerTurn])
 
   // checks scoring and if there is a winner
   useEffect(()=>{
@@ -210,8 +253,11 @@ function Board() {
         winner = boardState.winner
       }
       
+      // remove undefined spots on the grid after a piece has moved off the board
+      const pieces: number[] = boardState.pieces.slice(0, BOARD_LENGTH-1)
+
       // resets the board removing the piece that is out of the board from the pieces array and updates score
-      setBoardState({...boardState, pieces: boardState.pieces.slice(0, BOARD_LENGTH-1), score: currScore, winner: winner})
+      setBoardState({...boardState, pieces: pieces, score: currScore, winner: winner})
     }
     console.log(boardState)
   }, [boardState])
@@ -220,7 +266,7 @@ function Board() {
   
   function handleRollClick() {
     if (boardState.phase === 'roll') {
-      setBoardState({...boardState, roll: roll(MAX), phase: "selection"})
+      setBoardState({...boardState, roll: roll(MAX_ROLL), phase: "selection"})
     }
   }
 
