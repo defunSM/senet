@@ -1,6 +1,5 @@
 import {v4 as uuidv4} from 'uuid'
 import { useState, useEffect } from 'react'
-// import {faker} from '@faker-js/faker'
 
 
 const PIECES = [1,2,1,2,1,2,1,2,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] // 1 and 2 represents each players respective marbles
@@ -12,7 +11,7 @@ const BOARD_LENGTH = 30 // number of grids on the board
 interface Board {
   pieces: number[]
   selectedPiece: number
-  playerTurn: number 
+  playerTurn: number
   roll: number
   phase: string
   validMoves: number[]
@@ -179,7 +178,7 @@ function createBoardGrid(boardState: any, setBoardState: any){
     // const marbles = boardState.pieces[props.index] === 1 ? greenMarble : redMarble
 
     const bgColor = props.index % 2 === 0 ? "bg-[url('/blacktexture.jpg')]" : "bg-[#FF6E31]"
-    return <button onClick={props.onClick} className={"m-1 py-4 text-black text-center drop-shadow-sm rounded-lg max-w-xs transition-all font-bold " + bgColor}>{/* {boardState.pieces[props.index]} */} {displayMarble}</button>
+    return <button onClick={props.onClick} className={"m-1 py-4 text-black text-center drop-shadow-sm rounded-lg max-w-xs transition-all font-bold " + bgColor + " square" + props.index}>{/* {boardState.pieces[props.index]} */} {displayMarble}</button>
   }
 
   // setup the senet board
