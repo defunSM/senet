@@ -211,10 +211,10 @@ function BoardGrid({boardState, setBoardState}: {boardState: Board, setBoardStat
   // Each square grid on the senet board
   function Square(props: any) {
     const greenMarble = (
-      <span className="rounded-full bg-[url('/assets/green_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
+      <span className="rounded-full bg-[url('/assets/green_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150 ring-1 ring-black hover:rotate-45"></span>
     );
     const redMarble = (
-      <span className="rounded-full bg-[url('/assets/red_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
+      <span className="rounded-full bg-[url('/assets/red_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150 ring-1 ring-black hover:rotate-45"></span>
     );
 
     // display the image for the marble
@@ -408,6 +408,7 @@ function Board() {
 
   return (
     <div className="bg-[url('/assets/whitenoise.png')] bg-cover m-10 rounded-lg">
+      
       <BoardGrid boardState={boardState} setBoardState={setBoardState}></BoardGrid>
       <RollButton boardState={boardState} setBoardState={setBoardState}></RollButton>
       <RollMessage boardState={boardState} />
