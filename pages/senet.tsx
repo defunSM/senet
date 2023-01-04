@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { useState, useEffect } from "react";
+import { stat } from "fs/promises";
 
 const PIECES = [
   1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -284,6 +285,30 @@ function checkMarbleOutOfBounds(pieces: number[]) {
   }
 }
 
+function RollMessage({ boardState }: { boardState: Board}) {
+
+  const visibility = boardState.phase === "selection" ? true : false
+  const playerTurn = boardState.playerTurn
+  const roll = boardState.roll
+
+  return (
+    <>
+      <div className={visibility ? "visible" : "invisible"}>
+          <div className="text-black font-bold ml-5">
+            Player {playerTurn}:
+          </div>
+          <div className="text-black justify-self-center font-semibold ml-8">
+            You rolled a {roll}{" "}
+          </div>
+          <div className="text-black font-semibold ml-8">
+            Select a piece to move
+          </div>
+      </div>
+    </>
+  )
+
+}
+
 // GameState -> Player 1 Need to click Roll -> Player Select Piece -> Player Validation -> AI Move
 
 // The entire 30 squares on the sennet board, 10 on each row
@@ -368,21 +393,7 @@ function Board() {
       >
         ROLL
       </button>
-      {boardState.phase === "selection" ? (
-        <>
-          <div className="text-black font-bold ml-5">
-            Player {boardState.playerTurn}:
-          </div>
-          <div className="text-black justify-self-center font-semibold ml-8">
-            You rolled a {boardState.roll}{" "}
-          </div>
-          <div className="text-black font-semibold ml-8">
-            Select a piece to move
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
+      <RollMessage boardState={boardState} />
     </div>
   );
 }
