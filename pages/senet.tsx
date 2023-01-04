@@ -152,16 +152,20 @@ function trackScore(boardState: Board) {
 
   // check for winner
   let winner;
-  if (currScore[0] === WIN_CONDITION_SCORE) {
-    winner = 1;
-  } else if (currScore[1] === WIN_CONDITION_SCORE) {
-    winner = 2;
-  } else {
-    winner = boardState.winner;
+
+  switch(WIN_CONDITION_SCORE) {
+    case currScore[0]:
+      winner = 1;
+      break;
+    case currScore[1]:
+      winner = 2;
+      break;
+    default:
+      winner = boardState.winner
   }
-  
+
   return { playerWhoScored, currScore, winner }
-  
+
 
 }
 
