@@ -10,6 +10,9 @@ const DEFAULT_ROLL = 5; // when 0 is rolled which means all pieces are face down
 const WIN_CONDITION_SCORE = 5; // score needed to win game
 const BOARD_LENGTH = 30; // number of grids on the board
 
+const PLAYER_ID = 1
+const AI_ID = 1
+
 interface Board {
   pieces: number[];
   selectedPiece: number;
@@ -101,7 +104,7 @@ function moveMarble(
 }
 
 // determines how many spaces the piece is going to move
-function roll(max: number = 4) {
+function makeRoll(max: number = 4) {
   const newRoll: number = Math.floor(Math.random() * max);
   if (newRoll === 0) {
     return DEFAULT_ROLL;
@@ -130,7 +133,7 @@ function moveMarbleForAi(boardState: Board) {
   const newPieces: number[] = moveMarble(
     boardState,
     aiChosenMarble,
-    roll(MAX_ROLL)
+    makeRoll(MAX_ROLL)
   );
 
   return newPieces;
@@ -320,7 +323,7 @@ function RollButton ({boardState, setBoardState}: {boardState: Board, setBoardSt
     if (boardState.phase === "roll") {
       setBoardState({
         ...boardState,
-        roll: roll(MAX_ROLL),
+        roll: makeRoll(MAX_ROLL),
         phase: "selection",
       });
     }
@@ -354,25 +357,33 @@ function Board() {
   // handles changes to state when rolling
   useEffect(() => {
     const validMoves: number[] = findValidMoves(boardState);
+    const playerTurn: number = boardState.playerTurn
 
-    if (boardState.playerTurn === 2) {
-      const pieces: number[] | undefined = moveMarbleForAi(boardState);
-      console.log(pieces);
-      if (pieces) {
-        setBoardState({ ...boardState, pieces: pieces, playerTurn: 1 });
-      } else {
-        setBoardState({
-          ...boardState,
-          playerTurn: getNextPlayerTurn(boardState),
-        });
-      }
-    } else {
-      setBoardState({ ...boardState, validMoves: validMoves });
+    // move marble based on who the player is
+    switch(playerTurn) {
+      // player
+      case 1:
+        setBoardState({ ...boardState, validMoves: validMoves})
+        break;
+      case 2: // ai
+        const pieces: number[] | undefined = moveMarbleForAi(boardState);
+
+        if (pieces) {
+          setBoardState({ ...boardState, pieces: pieces, playerTurn: 1 });
+        } else {
+          setBoardState({
+            ...boardState,
+            playerTurn: getNextPlayerTurn(boardState),
+          });
+        }
     }
+
+    console.log(boardState)
   }, [boardState.playerTurn]);
 
   // checks scoring and if there is a winner
   useEffect(() => {
+
     if (checkMarbleOutOfBounds(boardState.pieces)) {
       // player who manages to get a piece off the board
       const { playerWhoScored, currScore, winner } = trackScore(boardState);
@@ -388,13 +399,15 @@ function Board() {
         pieces: pieces,
         score: currScore,
         winner: winner,
+        playerTurn: 1
       });
     }
+
     console.log(boardState);
   }, [boardState]);
 
   return (
-    <div className="bg-[url('/whitenoise.png')] bg-cover m-10 rounded-lg">
+    <div className="bg-[url('/assets/whitenoise.png')] bg-cover m-10 rounded-lg">
       <BoardGrid boardState={boardState} setBoardState={setBoardState}></BoardGrid>
       <RollButton boardState={boardState} setBoardState={setBoardState}></RollButton>
       <RollMessage boardState={boardState} />
@@ -410,12 +423,6 @@ function game() {
       </div>
       <div className=" grid bg-[url('/assets/whitenoise.png')] bg-cover rounded-lg m-10 drop-shadow-xl shadow-white transition-all">
         <Board></Board>
-      </div>
-
-      <div className="m-auto py-100">
-        Dolor fuga dignissimos. Asperiores maxime numquam consectetur ex quae.
-        Iste odio rem minima expedita voluptas. Dolorum nemo nihil iure adipisci
-        dolores.
       </div>
     </div>
   );
