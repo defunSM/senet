@@ -141,9 +141,28 @@ function getNextPlayerTurn(boardState: Board) {
   return boardState.playerTurn === 1 ? 2 : 1;
 }
 
-// gets the player that scored
-function whichPlayerScored(boardState: Board) {
-  return boardState.pieces.slice(BOARD_LENGTH).reduce((acc, val) => acc + val , 0)
+// gets the player that scored and if there is a winner
+function trackScore(boardState: Board) {
+
+  const playerWhoScored = boardState.pieces.slice(BOARD_LENGTH).reduce((acc, val) => acc + val , 0)
+
+  // increases that player's score by 1
+  const currScore = boardState.score;
+  currScore[playerWhoScored - 1] += 1;
+
+  // check for winner
+  let winner;
+  if (currScore[0] === WIN_CONDITION_SCORE) {
+    winner = 1;
+  } else if (currScore[1] === WIN_CONDITION_SCORE) {
+    winner = 2;
+  } else {
+    winner = boardState.winner;
+  }
+  
+  return { playerWhoScored, currScore, winner }
+  
+
 }
 
 function createBoardGrid(boardState: any, setBoardState: any) {
@@ -154,8 +173,10 @@ function createBoardGrid(boardState: any, setBoardState: any) {
     const phase = boardState.phase;
     switch (phase) {
       case "selection":
+
         const nextPlayerTurn: number = getNextPlayerTurn(boardState);
         const newPieces: number[] = moveMarble(boardState, selectedPiece);
+
         setBoardState({
           ...boardState,
           selectedPiece: selectedPiece,
@@ -298,22 +319,9 @@ function Board() {
   useEffect(() => {
     if (checkMarbleOutOfBounds(boardState.pieces)) {
       // player who manages to get a piece off the board
-      const playerWhoScored = whichPlayerScored(boardState);
+      const { playerWhoScored, currScore, winner } = trackScore(boardState);
       console.log("Player " + playerWhoScored + " scored");
 
-      // increases that player's score by 1
-      const currScore = boardState.score;
-      currScore[playerWhoScored - 1] += 1;
-
-      // check for winner
-      let winner;
-      if (currScore[0] === WIN_CONDITION_SCORE) {
-        winner = 1;
-      } else if (currScore[1] === WIN_CONDITION_SCORE) {
-        winner = 2;
-      } else {
-        winner = boardState.winner;
-      }
 
       // remove undefined spots on the grid after a piece has moved off the board
       const pieces: number[] = boardState.pieces.slice(0, BOARD_LENGTH - 1);
