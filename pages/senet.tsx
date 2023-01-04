@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
 import { useState, useEffect } from "react";
-import { stat } from "fs/promises";
 
 const PIECES = [
   1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -170,7 +169,7 @@ function trackScore(boardState: Board) {
 
 }
 
-function createBoardGrid(boardState: any, setBoardState: any) {
+function BoardGrid({boardState, setBoardState}: {boardState: Board, setBoardState: any}) {
   // ------------------ Game Logic ---------------------------------------
 
   // core logic for updating the board state
@@ -273,7 +272,13 @@ function createBoardGrid(boardState: any, setBoardState: any) {
     <div className="grid grid-cols-10">{boardGrid.slice(20, 30)}</div>
   );
 
-  return { firstRow, secondRow, thirdRow };
+  return (
+    <>
+      <div className="">{firstRow}</div>
+      <div className="">{secondRow}</div>
+      <div className="">{thirdRow}</div>
+    </>
+  )
 }
 
 // checks if a marble has made it off the board
@@ -309,6 +314,28 @@ function RollMessage({ boardState }: { boardState: Board}) {
 
 }
 
+function RollButton ({boardState, setBoardState}: {boardState: Board, setBoardState: any}) {
+
+  function handleRollClick() {
+    if (boardState.phase === "roll") {
+      setBoardState({
+        ...boardState,
+        roll: roll(MAX_ROLL),
+        phase: "selection",
+      });
+    }
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => handleRollClick()}
+        className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150"
+      >
+        ROLL
+      </button></>
+  )
+}
 // GameState -> Player 1 Need to click Roll -> Player Select Piece -> Player Validation -> AI Move
 
 // The entire 30 squares on the sennet board, 10 on each row
@@ -366,33 +393,10 @@ function Board() {
     console.log(boardState);
   }, [boardState]);
 
-  const { firstRow, secondRow, thirdRow } = createBoardGrid(
-    boardState,
-    setBoardState
-  );
-
-  function handleRollClick() {
-    if (boardState.phase === "roll") {
-      setBoardState({
-        ...boardState,
-        roll: roll(MAX_ROLL),
-        phase: "selection",
-      });
-    }
-  }
-
   return (
     <div className="bg-[url('/whitenoise.png')] bg-cover m-10 rounded-lg">
-      <div className="">{firstRow}</div>
-      <div className="">{secondRow}</div>
-      <div className="">{thirdRow}</div>
-
-      <button
-        onClick={() => handleRollClick()}
-        className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150"
-      >
-        ROLL
-      </button>
+      <BoardGrid boardState={boardState} setBoardState={setBoardState}></BoardGrid>
+      <RollButton boardState={boardState} setBoardState={setBoardState}></RollButton>
       <RollMessage boardState={boardState} />
     </div>
   );
