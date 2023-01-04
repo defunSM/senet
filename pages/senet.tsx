@@ -1,5 +1,5 @@
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useState, useEffect } from "react";
 
 const PIECES = [
   1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -227,7 +227,7 @@ function BoardGrid({boardState, setBoardState}: {boardState: Board, setBoardStat
         displayMarble = redMarble;
         break;
       default:
-        displayMarble = <div className="p-5"></div>;
+        displayMarble = <div className="p-6"></div>;
     }
 
     // const marbles = boardState.pieces[props.index] === 1 ? greenMarble : redMarble
@@ -240,7 +240,7 @@ function BoardGrid({boardState, setBoardState}: {boardState: Board, setBoardStat
       <button
         onClick={props.onClick}
         className={
-          "m-1 py-4 text-black text-center drop-shadow-sm rounded-lg max-w-xs transition-all font-bold " +
+          "m-1 py-4 text-black text-center drop-shadow-sm max-w-xs transition-all font-bold ring-1 ring-black " +
           bgColor +
           " square" +
           props.index
@@ -408,21 +408,22 @@ function Board() {
 
   return (
     <div className="bg-[url('/assets/whitenoise.png')] bg-cover m-10 rounded-lg">
-      
+      <div className="">
       <BoardGrid boardState={boardState} setBoardState={setBoardState}></BoardGrid>
       <RollButton boardState={boardState} setBoardState={setBoardState}></RollButton>
       <RollMessage boardState={boardState} />
+      </div>
     </div>
   );
 }
 
 function game() {
   return (
-    <div className="grid bg-[#243763] h-screen">
-      <div className="bg-[#FFEBB7] m-auto justify-self-center rounded-lg text-4xl text-black mt-10 p-5 drop-shadow-md shadow-black transition-all hover:scale-110 ">
+    <div className="grid bg-[#243763] h-screen justify-items-center">
+      <div className="bg-[#FFEBB7] m-auto rounded-lg text-4xl text-black mt-10 p-5 drop-shadow-md shadow-black transition-all hover:scale-110 ">
         <span>Senet</span>
       </div>
-      <div className=" grid bg-[url('/assets/whitenoise.png')] bg-cover rounded-lg m-10 drop-shadow-xl shadow-white transition-all">
+      <div className="bg-[url('/assets/whitenoise.png')] bg-cover rounded-lg ring-2 ring-black m-10 drop-shadow-xl shadow-white transition-all w-3/4">
         <Board></Board>
       </div>
     </div>
