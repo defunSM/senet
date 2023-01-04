@@ -158,8 +158,8 @@ function createBoardGrid(boardState: any, setBoardState: any){
 
   // Each square grid on the senet board
   function Square(props: any) {
-    const greenMarble = <span className="rounded-full bg-[url('/green_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
-    const redMarble = <span className="rounded-full bg-[url('/red_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
+    const greenMarble = <span className="rounded-full bg-[url('/assets/green_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
+    const redMarble = <span className="rounded-full bg-[url('/assets/red_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150"></span>
 
     
     // display the image for the marble
@@ -177,7 +177,7 @@ function createBoardGrid(boardState: any, setBoardState: any){
 
     // const marbles = boardState.pieces[props.index] === 1 ? greenMarble : redMarble
 
-    const bgColor = props.index % 2 === 0 ? "bg-[url('/blacktexture.jpg')]" : "bg-[#FF6E31]"
+    const bgColor = props.index % 2 === 0 ? "bg-[url('/assets/blacktexture.jpg')]" : "bg-[#FF6E31]"
     return <button onClick={props.onClick} className={"m-1 py-4 text-black text-center drop-shadow-sm rounded-lg max-w-xs transition-all font-bold " + bgColor + " square" + props.index}>{/* {boardState.pieces[props.index]} */} {displayMarble}</button>
   }
 
@@ -218,6 +218,7 @@ function Board() {
   // handles changes to state when rolling
   useEffect(()=>{
     const validMoves: number[] = findValidMoves(boardState)
+    
     if(boardState.playerTurn === 2) {
       const pieces: (number[] | undefined) = moveMarbleForAi(boardState)
       console.log(pieces)
@@ -288,7 +289,7 @@ function game () {
   return (<div className="grid bg-[#243763] h-screen">
     
     <div className="bg-[#FFEBB7] m-auto justify-self-center rounded-lg text-4xl text-black mt-10 p-5 drop-shadow-md shadow-black transition-all hover:scale-110 "><span>Senet</span></div> 
-    <div className=" grid bg-[url('/whitenoise.png')] bg-cover rounded-lg m-10 drop-shadow-xl shadow-white transition-all"><Board></Board>
+    <div className=" grid bg-[url('/assets/whitenoise.png')] bg-cover rounded-lg m-10 drop-shadow-xl shadow-white transition-all"><Board></Board>
     </div>
 
     <div className="m-auto py-100">Dolor fuga dignissimos. Asperiores maxime numquam consectetur ex quae. Iste odio rem minima expedita voluptas. Dolorum nemo nihil iure adipisci dolores.</div>
