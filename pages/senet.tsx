@@ -170,21 +170,23 @@ import LinearProgressWithLabel from './components/Timer'
 
 function game() {
   return (
-    <div className="grid bg-[#243763] h-screen justify-items-center">
-      <div className="flex">
+    <div className="bg-[#243763] h-screen flex flex-col items-center justify-center"><InterfaceButton>Senet</InterfaceButton>
+      <div className="">
+
       <ExitSenet>
         <div className=""><p className=""></p><ExitIcon></ExitIcon>
         </div>
       </ExitSenet>
+
       <Chat><ChatIcon></ChatIcon></Chat>
       <InterfaceButton><SettingsIcon></SettingsIcon></InterfaceButton>
       <InterfaceButton><AudioIcon></AudioIcon></InterfaceButton>
-      <InterfaceButton><p className="text-lg hover:scale-105 hover:text-purple-700 font-bold animate-bounce">Roll</p></InterfaceButton>
+      <InterfaceButton><p className="text-lg hover:scale-105 m-0 p-0 hover:text-purple-700 font-bold animate-bounce">Roll</p></InterfaceButton>
       <BasicModal></BasicModal>
-      <InterfaceButton>Senet</InterfaceButton>
+
 
       </div>
-      <div className="flex w-screen">
+      <div className="">
         <LinearProgressWithLabel></LinearProgressWithLabel>
       </div>
       <div className="bg-[url('/assets/whitenoise.png')] bg-cover rounded-lg ring-2 ring-black m-10 drop-shadow-xl shadow-white transition-all w-3/4">

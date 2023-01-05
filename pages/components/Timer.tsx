@@ -5,16 +5,16 @@ import Box from '@mui/material/Box';
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
   return (
-    <div className="">
-        <div className="grid justify-items-center">
+    <>
+        <div className="">
             <Typography variant="body2" color="text.primary">{`${Math.round(
           props.value,
         )}`}</Typography>
         </div>
-        <div className="ml-20 mr-20 justify-center">
+        <div className="">
             <LinearProgress variant="determinate" {...props} />
         </div>
-    </div>
+    </>
   );
 }
 
@@ -31,12 +31,6 @@ export default function LinearWithValueLabel() {
   }, []);
 
   return (
-
-    <Box sx={{ width: '100%' }}>
-
         <LinearProgressWithLabel value={progress} />
-
-    </Box>
-
   );
 }
