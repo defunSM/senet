@@ -109,3 +109,11 @@ a {
     color-scheme: dark;
   }
 }
+
+.redmarble {
+  background-image: url('/assets/red_marble.png');
+}
+
+.greenmarble {
+  background-image: url('/assets/green_marble.png');
+}

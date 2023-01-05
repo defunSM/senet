@@ -3,9 +3,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Board, checkValidMove, getNextPlayerTurn, moveMarble } from "./BoardLogic";
 
 function Marble({color}: {color: string}){
-    const backgroundImage = "bg-[url('/assets/" + color + "_marble.png')]"
-    return <div className={backgroundImage + " rounded-sm inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150 ring-1 ring-black hover:rotate-45 " }></div>
-
+    const background = color + "marble"
+    return <div className={background + " rounded-sm inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150 ring-1 ring-black hover:rotate-45 " }></div>
 }
 
 export default function BoardGrid({boardState, setBoardState}: {boardState: Board, setBoardState: any}) {

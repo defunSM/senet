@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import BoardGrid from "./components/BoardGrid"
-import { Board, makeRoll, findValidMoves, moveMarbleForAi, getNextPlayerTurn, trackScore, checkMarbleOutOfBounds } from "./components/BoardLogic"
-import { PIECES, BOARD_LENGTH } from './components/constants'
+import BoardGrid from "./components/BoardGrid";
+import { Board, checkMarbleOutOfBounds, findValidMoves, getNextPlayerTurn, makeRoll, moveMarbleForAi, trackScore } from "./components/BoardLogic";
+import Chat from './components/Chat';
+import { BOARD_LENGTH, PIECES } from './components/constants';
+import ExitSenet from './components/ExitSenet';
+import { InterfaceButton } from './components/StandardButtons';
 
-function RollMessage({ boardState }: { boardState: Board}) {
+function RollMessage({ boardState }: { boardState: Board }) {
 
   const visibility = boardState.phase === "selection" ? true : false
   const playerTurn = boardState.playerTurn
@@ -40,13 +43,12 @@ function RollButton ({boardState, setBoardState}: {boardState: Board, setBoardSt
   }
 
   return (
-    <>
       <button
         onClick={() => handleRollClick()}
-        className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto p-5 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150"
+      className="grid mt-5 text-black justify-self-center font-bold bg-[#AD8E70] m-auto pt-3 pb-3 pl-3 pr-3 rounded-lg shadow-black drop-shadow-lg hover:scale-110 transition-all hover:contrast-150 ring-1 ring-black hover:text-white "
       >
-        ROLL
-      </button></>
+        <span className="">ROLL</span>
+      </button>
   )
 }
 // GameState -> Player 1 Need to click Roll -> Player Select Piece -> Player Validation -> AI Move
@@ -130,8 +132,10 @@ function Board() {
 function game() {
   return (
     <div className="grid bg-[#243763] h-screen justify-items-center">
-      <div className="bg-[#FFEBB7] m-auto rounded-lg text-4xl text-black mt-10 p-5 drop-shadow-md shadow-black transition-all hover:scale-110 ">
-        <span>Senet</span>
+      <div className="flex justify-start">
+      <ExitSenet></ExitSenet>
+      <Chat/>
+      <InterfaceButton text="Senet"></InterfaceButton>
       </div>
       <div className="bg-[url('/assets/whitenoise.png')] bg-cover rounded-lg ring-2 ring-black m-10 drop-shadow-xl shadow-white transition-all w-3/4">
         <Board></Board>
