@@ -1,6 +1,12 @@
+import { MouseEventHandler } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { getNextPlayerTurn, moveMarble, checkValidMove } from "./BoardLogic"
-import { Board } from "./BoardLogic"
+import { Board, checkValidMove, getNextPlayerTurn, moveMarble } from "./BoardLogic";
+
+function Marble({color}: {color: string}){
+    const backgroundImage = "bg-[url('/assets/" + color + "_marble.png')]"
+    return <div className={backgroundImage + " rounded-sm inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150 ring-1 ring-black hover:rotate-45 " }></div>
+
+}
 
 export default function BoardGrid({boardState, setBoardState}: {boardState: Board, setBoardState: any}) {
     // ------------------ Game Logic ---------------------------------------
@@ -39,17 +45,18 @@ export default function BoardGrid({boardState, setBoardState}: {boardState: Boar
     // ------------------------ styling for components + creating the square grids ----------------
 
     // Each square grid on the senet board
-    function Square(props: any) {
-      const greenMarble = (
-        <span className="rounded-full bg-[url('/assets/green_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150 ring-1 ring-black hover:rotate-45"></span>
-      );
-      const redMarble = (
-        <span className="rounded-full bg-[url('/assets/red_marble.png')] inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150 ring-1 ring-black hover:rotate-45"></span>
-      );
+    function Square({marbleId, onClick}: {marbleId: number, onClick: MouseEventHandler}) {
+
+      // pieces and squares of the board
+      const greenMarble = <Marble color="green"></Marble>
+      const redMarble = <Marble color="red"></Marble>
+
+      const blackSquare = "bg-[url('/assets/blacktexture.jpg')]";
+      const whiteSquare = "bg-[url('/assets/marbletexture.png')]";
 
       // display the image for the marble
       let displayMarble;
-      switch (boardState.pieces[props.index]) {
+      switch (boardState.pieces[marbleId]) {
         case 1:
           displayMarble = greenMarble;
           break;
@@ -60,20 +67,19 @@ export default function BoardGrid({boardState, setBoardState}: {boardState: Boar
           displayMarble = <div className="p-6"></div>;
       }
 
-      // const marbles = boardState.pieces[props.index] === 1 ? greenMarble : redMarble
-
-      const bgColor =
-        props.index % 2 === 0
-          ? "bg-[url('/assets/blacktexture.jpg')]"
-          : "bg-[#FF6E31]";
+      // sets the color of the grid for the board
+      const squareBackgroundColor =
+        marbleId % 2 === 0
+          ? blackSquare
+          : whiteSquare
       return (
         <button
-          onClick={props.onClick}
+          onClick={onClick}
           className={
             "m-1 py-4 text-black text-center drop-shadow-sm max-w-xs transition-all font-bold ring-1 ring-black " +
-            bgColor +
+            squareBackgroundColor +
             " square" +
-            props.index
+            marbleId
           }
         >
           {/* {boardState.pieces[props.index]} */} {displayMarble}
@@ -83,13 +89,13 @@ export default function BoardGrid({boardState, setBoardState}: {boardState: Boar
 
     // setup the senet board
     const boardPositions = Array.from(Array(30).keys());
-    const boardGrid = boardPositions.map((_element, index) => {
+    const boardGrid = boardPositions.map((_element, marbleId) => {
       const uniqueId = uuidv4();
       return (
         <Square
           key={uniqueId}
-          index={index}
-          onClick={() => handleSquareSelection(index)}
+          marbleId={marbleId}
+          onClick={() => handleSquareSelection(marbleId)}
         ></Square>
       );
     });
