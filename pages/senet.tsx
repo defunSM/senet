@@ -1,3 +1,4 @@
+import { Inter } from "@next/font/google";
 import { useEffect, useState } from "react";
 import BoardGrid from "./components/BoardGrid";
 import { Board, checkMarbleOutOfBounds, findValidMoves, getNextPlayerTurn, makeRoll, moveMarbleForAi, trackScore } from "./components/BoardLogic";
@@ -129,13 +130,62 @@ function Board() {
   );
 }
 
+const ExitIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+</svg>
+  )
+}
+
+const ChatIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+</svg>
+
+  )
+}
+
+const SettingsIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M6 13.5V3.75m0 9.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 3.75V16.5m12-3V3.75m0 9.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 3.75V16.5m-6-9V3.75m0 3.75a1.5 1.5 0 010 3m0-3a1.5 1.5 0 000 3m0 9.75V10.5" />
+</svg>
+
+  )
+}
+
+const AudioIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 9.75L19.5 12m0 0l2.25 2.25M19.5 12l2.25-2.25M19.5 12l-2.25 2.25m-10.5-6l4.72-4.72a.75.75 0 011.28.531V19.94a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.506-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.395C2.806 8.757 3.63 8.25 4.51 8.25H6.75z" />
+</svg>
+
+  )
+}
+
+import BasicModal from './components/ExitModel'
+import LinearProgressWithLabel from './components/Timer'
+
 function game() {
   return (
     <div className="grid bg-[#243763] h-screen justify-items-center">
-      <div className="flex justify-start">
-      <ExitSenet></ExitSenet>
-      <Chat/>
-      <InterfaceButton text="Senet"></InterfaceButton>
+      <div className="flex">
+      <ExitSenet>
+        <div className=""><p className=""></p><ExitIcon></ExitIcon>
+        </div>
+      </ExitSenet>
+      <Chat><ChatIcon></ChatIcon></Chat>
+      <InterfaceButton><SettingsIcon></SettingsIcon></InterfaceButton>
+      <InterfaceButton><AudioIcon></AudioIcon></InterfaceButton>
+      <InterfaceButton><p className="text-lg hover:scale-105 hover:text-purple-700 font-bold animate-bounce">Roll</p></InterfaceButton>
+      <BasicModal></BasicModal>
+      <InterfaceButton>Senet</InterfaceButton>
+
+      </div>
+      <div className="flex w-screen">
+        <LinearProgressWithLabel></LinearProgressWithLabel>
       </div>
       <div className="bg-[url('/assets/whitenoise.png')] bg-cover rounded-lg ring-2 ring-black m-10 drop-shadow-xl shadow-white transition-all w-3/4">
         <Board></Board>

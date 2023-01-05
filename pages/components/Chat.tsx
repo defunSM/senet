@@ -1,5 +1,5 @@
 import { InterfaceButton } from './StandardButtons'
 
-export default function Chat () {
-    return <InterfaceButton text="Chat" />
+export default function Chat ({children}: {children: any}) {
+    return <InterfaceButton>{children}</InterfaceButton>
 }
