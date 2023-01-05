@@ -182,11 +182,11 @@ function game() {
       <InterfaceButton><SettingsIcon></SettingsIcon></InterfaceButton>
       <InterfaceButton><AudioIcon></AudioIcon></InterfaceButton>
       <InterfaceButton><p className="text-lg hover:scale-105 m-0 p-0 hover:text-purple-700 font-bold animate-bounce">Roll</p></InterfaceButton>
-      <BasicModal></BasicModal>
+      {/* <BasicModal></BasicModal> */}
 
 
       </div>
-      <div className="">
+      <div className="mt-5">
         <LinearProgressWithLabel></LinearProgressWithLabel>
       </div>
       <div className="bg-[url('/assets/whitenoise.png')] bg-cover rounded-lg ring-2 ring-black m-10 drop-shadow-xl shadow-white transition-all w-3/4">

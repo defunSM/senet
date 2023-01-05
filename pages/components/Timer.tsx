@@ -6,12 +6,11 @@ import Box from '@mui/material/Box';
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
   return (
     <>
-        <div className="">
-            <Typography variant="body2" color="text.primary">{`${Math.round(
-          props.value,
-        )}`}</Typography>
+        <div className="pl-20 pr-20 text-white text-lg animate-pulse">
+        {Math.round(
+          props.value / 5,)}
         </div>
-        <div className="">
+        <div className="w-full">
             <LinearProgress variant="determinate" {...props} />
         </div>
     </>
@@ -23,7 +22,7 @@ export default function LinearWithValueLabel() {
 
   React.useEffect(() => {
     const timer = setInterval(() => {
-      setProgress((prevProgress) => (prevProgress <= 0 ? 100 : prevProgress - 5));
+      setProgress((prevProgress) => (prevProgress <= 0 ? 100 : prevProgress - 4));
     }, 1000);
     return () => {
       clearInterval(timer);
