@@ -3,9 +3,13 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Link from 'next/link'
 import Image from 'next/image'
+import Marble from './components/Marble'
+import PlayApp from './components/PlayButton'
+import Puzzle from './components/Puzzle'
 
-const inter = Inter({ subsets: ['latin'] })
-const roboto = Roboto({ weight: "500"})
+const inter = Inter({ subsets: ['latin'], weight: '800' })
+const interThin = Inter({ subsets: ['latin'], weight: '300'})
+const roboto = Roboto({ weight: "700"})
 
 export default function Home() {
   return (
@@ -16,17 +20,28 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-        <div className="bg-white h-screen grid p-20 bg-gradient-to-r from-purple-500 to-pink-500">
-        <div className="grid ml-10 mr-10">
-          <div className="bg-yellow-200 p-20 rounded-3xl ring-black ring-1 shadow-md drop-shadow-md">
-            {/* <span className="text-black ">Senet</span> */}
-            <p className={"text-black text-3xl " }>Senet is an ancient Egyptian board game that was played by people in ancient Egypt more than 3500 years ago.
-            
-            The game consists of a rectangular board with 30 squares arranged in three rows of ten squares each. Each player has a set of game pieces, which they move according to the roll of dice. The objective of the game is to be the first player to move all of their pieces off the board.</p>
-          </div>
+      <div className="flex flex-col justify-center items-center"> <Puzzle></Puzzle></div>
+        <div className="bg-white h-screen flex flex-col bg-gradient-to-r from-purple-500 to-pink-500 justify-center">
 
-            <div className="bg-gradient-r from-purple-500 to-pink-500 p-20 rounded-b-3xl"></div>
-          </div>
+
+        <div className="">
+        <h1 className={"font-weight-800 text-8xl mb-0 ring-2 pt-4  ring-black bg-yellow-400  " + inter.className}><span className="text-black">Senet</span> is a fun board <span className="hover:scale-110">game</span>. </h1>
+        </div>
+        <div className="p-20 justify-self-center">
+        <span className={"text-lg "}>An ancient Egyptian board game that is believed to have been played as far back as 3100 BCE.<p></p>The game is played on a grid of 30 squares, arranged in three rows of ten.<p></p> Each player has a set of pieces that are moved along the board according to the roll of a pair of dice.<p></p> The goal of the game is to be the first player to get all of their pieces off the board.</span>
+        </div>
+        {/* <div className="pl-20 text-black font-bold">Are you ready?
+        <div className="flex flex-row mt-3 gap-2">
+        <Marble color="red"></Marble>
+        <Marble color="green"></Marble>
+        </div>
+
+        </div> */}
+        <div className="flex flex-row justify-center">
+        <PlayApp></PlayApp>
+        </div>
+        {/* <h1 className={"font-weight-800 text-4xl mt-0 pt-0 " + inter.className}>Played by the Egyptians more than 3500 years ago.</h1> */}
+
         </div>
     </>
   )

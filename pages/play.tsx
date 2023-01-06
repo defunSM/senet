@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker'
 import { Arvo } from '@next/font/google'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 const arvo = Arvo({ weight: "400"})
 
@@ -53,10 +54,10 @@ function Play (props: any)  {
             <div className="mt-5 mb-5 justify-center flex">
                         <div className="mr-5 p-2 bg-yellow-300 text-black rounded-lg flex drop-shadow-md hover:scale-110 transition-all">
                 <Image className="" src="/left-arrow.svg" width={30} height={30} alt="left-arrow"></Image>
-                        <span className="mt-0.5 ml-1 font-semibold">Go back</span>
+                        <span className="mt-0.5 ml-1 font-semibold"><Link href="/">Go back</Link></span>
                     </div>
                         <div className="mr-5 p-2 bg-yellow-300 text-black rounded-lg flex drop-shadow-md transition-all hover:scale-110">
-                        <span className="mt-0.5 mr-2 font-semibold">Next</span>
+                        <span className="mt-0.5 mr-2 font-semibold"><Link href="/senet">Next</Link></span>
                 <Image className="" src="/right-arrow.svg" width={30} height={30} alt="right-arrow"></Image>
                     </div>
                 </div>
