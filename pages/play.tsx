@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker'
-import { Suspense, useEffect, useState } from 'react'
-import Image from 'next/image'
 import { Arvo } from '@next/font/google'
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 const arvo = Arvo({ weight: "400"})
 
@@ -35,11 +35,16 @@ function Play (props: any)  {
 
     return (
         <div className="h-screen grid bg-[#FFEBB7]">
-        <div className="bg-yellow-400 m-10 rounded-lg transition-all drop-shadow-md">        
+        <div className="bg-yellow-400 m-10 rounded-lg transition-all drop-shadow-md">
                 <div className="mt-10 mb-1 p-1 text-2xl justify-center grid border-yellow-300 border-2 bg-yellow-300 text-black rounded-lg drop-shadow-md font-semibold">Choose a character</div>
                 <div className="pt-5 hover:pb-5 grid justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-t-lg hover:translate-y-8 transition-all">
                 <div className="mb-3 grid justify-center">
-                <Image className="rounded-lg hover:scale-110 hover:contrast-125 transition-all drop-shadow-md" src={avatarUrl} width={120} height={120} alt="player avatar"></Image>
+                <Image className="rounded-lg hover:scale-110 hover:contrast-125 transition-all drop-shadow-md"
+                src={avatarUrl}
+                width={120}
+                height={120}
+                alt="player avatar"
+                unoptimized={true}></Image>
                 </div>
                 <div className={arvo.className + " text-4xl justify-self-center mb-3 p-2 rounded-lg border-yellow-300 border-2 bg-yellow-300 text-black drop-shadow-md"}>{username}</div>
                 <div className="grid justify-center">
