@@ -1,4 +1,3 @@
-import { Inter } from "@next/font/google";
 import { useEffect, useState } from "react";
 import BoardGrid from "./components/BoardGrid";
 import { Board, checkMarbleOutOfBounds, findValidMoves, getNextPlayerTurn, makeRoll, moveMarbleForAi, trackScore } from "./components/BoardLogic";
@@ -6,6 +5,8 @@ import Chat from './components/Chat';
 import { BOARD_LENGTH, PIECES } from './components/constants';
 import ExitSenet from './components/ExitSenet';
 import { InterfaceButton } from './components/StandardButtons';
+import BasicModal from './components/ExitModel'
+import LinearProgressWithLabel from './components/Timer'
 
 function RollMessage({ boardState }: { boardState: Board }) {
 
@@ -28,7 +29,6 @@ function RollMessage({ boardState }: { boardState: Board }) {
       </div>
     </>
   )
-
 }
 
 function RollButton ({boardState, setBoardState}: {boardState: Board, setBoardState: any}) {
@@ -164,9 +164,6 @@ const AudioIcon = () => {
 
   )
 }
-
-import BasicModal from './components/ExitModel'
-import LinearProgressWithLabel from './components/Timer'
 
 function game() {
   return (
