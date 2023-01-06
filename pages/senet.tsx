@@ -179,6 +179,7 @@ function game() {
       <InterfaceButton><SettingsIcon></SettingsIcon></InterfaceButton>
       <InterfaceButton><AudioIcon></AudioIcon></InterfaceButton>
       <InterfaceButton><p className="text-lg hover:scale-105 m-0 p-0 hover:text-purple-700 font-bold animate-bounce">Roll</p></InterfaceButton>
+      <InterfaceButton><p className="text-sm">1</p></InterfaceButton>
       {/* <BasicModal></BasicModal> */}
 
 

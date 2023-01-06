@@ -1,14 +1,11 @@
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, MutableRefObject, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Board, checkValidMove, getNextPlayerTurn, moveMarble } from "./BoardLogic";
-
-function Marble({color}: {color: string}){
-    const background = color + "marble"
-    return <div className={background + " rounded-sm inline-block p-5 drop-shadow-md shadow-black transition-all hover:scale-150 ring-1 ring-black hover:rotate-45 " }></div>
-}
+import Marble from './Marble'
 
 export default function BoardGrid({boardState, setBoardState}: {boardState: Board, setBoardState: any}) {
     // ------------------ Game Logic ---------------------------------------
+    const boardBoundary: MutableRefObject<null> = useRef(null)
 
     // core logic for updating the board state
     function updateGameState(selectedPiece: number) {
@@ -47,8 +44,8 @@ export default function BoardGrid({boardState, setBoardState}: {boardState: Boar
     function Square({marbleId, onClick}: {marbleId: number, onClick: MouseEventHandler}) {
 
       // pieces and squares of the board
-      const greenMarble = <Marble color="green"></Marble>
-      const redMarble = <Marble color="red"></Marble>
+      const greenMarble = <Marble boundaryRef={boardBoundary} color="green"></Marble>
+      const redMarble = <Marble boundaryRef={boardBoundary} color="red"></Marble>
 
       const blackSquare = "bg-[url('/assets/blacktexture.jpg')]";
       const whiteSquare = "bg-[url('/assets/marbletexture.png')]";
@@ -75,7 +72,7 @@ export default function BoardGrid({boardState, setBoardState}: {boardState: Boar
         <button
           onClick={onClick}
           className={
-            "m-1 py-4 text-black text-center drop-shadow-sm max-w-xs transition-all font-bold ring-1 ring-black " +
+            "m-1 py-4 text-black text-center drop-shadow-sm max-w-xs transition-all font-bold ring-1 ring-black rounded-sm " +
             squareBackgroundColor +
             " square" +
             marbleId
@@ -111,10 +108,10 @@ export default function BoardGrid({boardState, setBoardState}: {boardState: Boar
     );
 
     return (
-      <>
+      <div ref={boardBoundary}>
         <div className="">{firstRow}</div>
         <div className="">{secondRow}</div>
         <div className="">{thirdRow}</div>
-      </>
+      </div>
     )
   }
