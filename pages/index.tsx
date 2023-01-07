@@ -1,9 +1,8 @@
-import { Inter, Roboto } from '@next/font/google'
+import { Inter } from '@next/font/google'
 import Head from 'next/head'
 import PlayApp from './components/PlayButton'
 import Puzzle from './components/Puzzle'
-import { motion } from 'framer-motion'
-import SenetTitle from './components/SenetTitle'
+import SenetHeaderTitle from './components/SenetTitle'
 import Play from './play'
 const inter = Inter({ subsets: ['latin'], weight: '800' })
 // const roboto = Roboto({ weight: "700"})
@@ -36,24 +35,25 @@ export default function Home() {
         <div className="bg-white h-screen flex flex-col bg-gradient-to-r from-purple-500 to-pink-500 justify-center">
 
         <div className="flex flex-row w-screen justify-center">
-          <SenetTitle></SenetTitle>
+          <SenetHeaderTitle></SenetHeaderTitle>
         </div>
 
          <div className="mt-5 mb-10 ml-20 flex flex-col justify-center items-center">
-          <span className="text-xl">An ancient Egyptian board game that is believed to have been played as far back as 3100 BCE.<p></p>
+          <span className="text-xl">Played as far back as 3100 BCE.<p></p>
 
-          The game is played on a grid of 30 squares, arranged in three rows of ten.<p></p>
-
-
-
-          Each player has a set of pieces that are moved along the board according to the roll of a pair of dice.<p></p>
+          The game is played on a grid of 30 squares.<p></p>
 
 
-           The goal of the game is to be the first player to get all of their pieces off the board.</span>
+
+          Each player has a set of pieces.<p></p>
+
+
+           The goal of the game is to get rid of all pieces.</span>
 
 
 
         </div>
+
 
           <div className="flex flex-row justify-center">
           <PlayApp></PlayApp>

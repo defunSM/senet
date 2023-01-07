@@ -167,7 +167,7 @@ const AudioIcon = () => {
 
 function game() {
   return (
-    <div className="bg-[#243763] h-screen flex flex-col items-center justify-center"><InterfaceButton>Senet</InterfaceButton>
+    <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-screen flex flex-col items-center justify-center"><InterfaceButton>Senet</InterfaceButton>
       <div className="">
 
       <ExitSenet>

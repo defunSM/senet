@@ -35,7 +35,7 @@ function Play (props: any)  {
     const avatarUrl = "https://avatars.dicebear.com/api/miniavs/" + username + ".svg?background=white"
 
     return (
-        <div className="h-screen grid bg-[#FFEBB7]">
+        <div className="h-screen grid bg-gradient-to-r from-purple-500 to-pink-500">
         <div className="bg-yellow-400 m-10 rounded-lg transition-all drop-shadow-md">
                 <div className="mt-10 mb-1 p-1 text-2xl justify-center grid border-yellow-300 border-2 bg-yellow-300 text-black rounded-lg drop-shadow-md font-semibold">Choose a character</div>
                 <div className="pt-5 hover:pb-5 grid justify-center bg-gradient-to-r from-cyan-500 to-blue-500 rounded-t-lg hover:translate-y-8 transition-all">
