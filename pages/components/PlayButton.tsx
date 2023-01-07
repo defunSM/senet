@@ -44,7 +44,7 @@ export default function PlayApp() {
           mouseX.set(e.clientX - bounds.x - bounds.width / 2);
           mouseY.set(e.clientY - bounds.y - bounds.height / 2);
         }}
-        className="playbutton"
+        className="playbutton shadow-emerald-300 drop-shadow-md ring-2 ring-black"
       >
         <motion.div
           className="shapes"
