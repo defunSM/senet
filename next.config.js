@@ -8,6 +8,10 @@ const nextConfig = {
       protocol: "https",
       hostname: "avatars.dicebear.com",
       port: ""
+    }, {
+      protocol: "https",
+      hostname: "herokuapp.com",
+      port: ""
     }],
   },
 

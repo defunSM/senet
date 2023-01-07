@@ -30,11 +30,9 @@ export default function Home() {
         <Puzzle></Puzzle>
       </div>
 
-
-
         <div className="bg-white h-screen flex flex-col bg-gradient-to-r from-purple-500 to-pink-500 justify-center">
 
-        <div className="flex flex-row w-screen justify-center">
+        <div className="justify-self-center mb-5">
           <SenetHeaderTitle></SenetHeaderTitle>
         </div>
 
