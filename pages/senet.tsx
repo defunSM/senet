@@ -1,12 +1,19 @@
 import { useEffect, useState } from "react";
-import BoardGrid from "./components/BoardGrid";
-import { Board, checkMarbleOutOfBounds, findValidMoves, getNextPlayerTurn, makeRoll, moveMarbleForAi, trackScore } from "./components/BoardLogic";
-import Chat from './components/Chat';
-import { BOARD_LENGTH, PIECES } from './components/constants';
-import ExitSenet from './components/ExitSenet';
-import { InterfaceButton } from './components/StandardButtons';
-import BasicModal from './components/ExitModel'
-import LinearProgressWithLabel from './components/Timer'
+import BoardGrid from "../components/Board/Grid";
+
+import Board from "../components/Board/types";
+import moveMarbleForAi from "../components/Board/utils/aiMove";
+import findValidMoves from "../components/Board/utils/findMove";
+import checkMarbleOutOfBounds from "../components/Board/utils/marbleBoundary";
+import getNextPlayerTurn from "../components/Board/utils/playerTurn";
+import makeRoll from "../components/Board/utils/roll";
+import trackScore from "../components/Board/utils/score";
+
+import LinearProgressWithLabel from '../components/Board/Timer';
+import Chat from '../components/Logos/Chat';
+import ExitSenet from '../components/Logos/ExitSenet';
+import InterfaceButton from '../components/StyledButton';
+import game from "../components/constants";
 
 function RollMessage({ boardState }: { boardState: Board }) {
 
@@ -57,7 +64,7 @@ function RollButton ({boardState, setBoardState}: {boardState: Board, setBoardSt
 // The entire 30 squares on the sennet board, 10 on each row
 function Board() {
   const [boardState, setBoardState] = useState({
-    pieces: PIECES,
+    pieces: game.PIECES,
     selectedPiece: 0,
     playerTurn: 1,
     roll: -1,
@@ -104,7 +111,7 @@ function Board() {
 
 
       // remove undefined spots on the grid after a piece has moved off the board
-      const pieces: number[] = boardState.pieces.slice(0, BOARD_LENGTH - 1);
+      const pieces: number[] = boardState.pieces.slice(0, game.BOARD_LENGTH - 1);
 
       // resets the board removing the piece that is out of the board from the pieces array and updates score
       setBoardState({
@@ -165,7 +172,7 @@ const AudioIcon = () => {
   )
 }
 
-function game() {
+function boardgame() {
   return (
     <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-screen flex flex-col items-center justify-center"><InterfaceButton>Senet</InterfaceButton>
       <div className="">
@@ -194,4 +201,4 @@ function game() {
   );
 }
 
-export default game;
+export default boardgame;

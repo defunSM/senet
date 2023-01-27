@@ -1,7 +1,13 @@
 import { MouseEventHandler, MutableRefObject, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Board, checkValidMove, getNextPlayerTurn, moveMarble } from "./BoardLogic";
-import Marble from './Marble'
+
+import checkValidMove from "./utils/validateMove";
+import  getNextPlayerTurn  from "./utils/playerTurn";
+import  moveMarble  from "./utils/playerMove";
+
+import Marble from './Marble';
+import Board from './types'
+import game from "../constants";
 
 export default function BoardGrid({boardState, setBoardState}: {boardState: Board, setBoardState: any}) {
     // ------------------ Game Logic ---------------------------------------
@@ -52,6 +58,7 @@ export default function BoardGrid({boardState, setBoardState}: {boardState: Boar
 
       // display the image for the marble
       let displayMarble;
+
       switch (boardState.pieces[marbleId]) {
         case 1:
           displayMarble = greenMarble;

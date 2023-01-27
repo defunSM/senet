@@ -1,39 +1,25 @@
-import { motion } from "framer-motion-3d";
-import { MotionConfig, useSpring, useTransform } from "framer-motion";
-import { useRef, useLayoutEffect, MutableRefObject } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
+import { MotionConfig } from "framer-motion";
+import { motion } from "framer-motion-3d";
+import { useLayoutEffect, useRef } from "react";
+import setting from "./constants";
+import useSmoothTransform from "./smoothTransform";
 
-export const transition: any = {
-    type: "spring",
-    duration: 0.7,
-    bounce: 0.2
-  };
-
-function useSmoothTransform(value: any, springOptions: any, transformer: any) {
-    return useSpring(useTransform(value, transformer), springOptions);
-}
-
-export function Shapes({ isHover, isPress, mouseX, mouseY }: { isHover: boolean, isPress: boolean, mouseX: number, mouseY: number}) {
-  const lightRotateX = useSmoothTransform(mouseY, spring, mouseToLightRotation);
-  const lightRotateY = useSmoothTransform(mouseX, spring, mouseToLightRotation);
+export default function Shapes({ isHover, isPress, mouseX, mouseY }: { isHover: boolean, isPress: boolean, mouseX: number, mouseY: number}) {
+  const lightRotateX = useSmoothTransform(mouseY, setting.SPRING, setting.MOUSE_TO_LIGHT_ROTATION);
+  const lightRotateY = useSmoothTransform(mouseX, setting.SPRING, setting.MOUSE_TO_LIGHT_ROTATION);
 
   return (
     <Canvas shadows dpr={[1, 2]} resize={{ scroll: false, offsetSize: true }}>
       <Camera mouseX={mouseX} mouseY={mouseY} />
-      <MotionConfig transition={transition}>
+      <MotionConfig transition={setting.TRANSITION}>
         <motion.group
-          center={[0, 0, 0]}
           rotation={[lightRotateX, lightRotateY, 0]}
         >
           <Lights />
         </motion.group>
         <motion.group
-          initial={false}
-          animate={isHover ? "hover" : "rest"}
           dispose={null}
-          variants={{
-            hover: { z: isPress ? -0.9 : 0 }
-          }}
         >
           <Sphere />
           <Cone />
@@ -45,7 +31,7 @@ export function Shapes({ isHover, isPress, mouseX, mouseY }: { isHover: boolean,
   );
 }
 
-export function Lights() {
+function Lights() {
   return (
     <>
       <spotLight color="#61dafb" position={[-10, -10, -10]} intensity={0.2} />
@@ -58,20 +44,21 @@ export function Lights() {
   );
 }
 
-export function Sphere() {
+function Sphere() {
   return (
-    <motion.mesh position={[-0.5, -0.5, 0]} variants={{ hover: { z: 2 } }}>
+    <motion.mesh position={[-0.5, -0.5, 0]}>
       <sphereGeometry args={[0.4]} />
       <Material />
     </motion.mesh>
   );
 }
 
-export function Cone() {
+function Cone() {
   return (
     <motion.mesh
       position={[-0.8, 0.4, 0]}
       rotation={[-0.5, 0, -0.3]}
+      // @ts-ignore
       variants={{
         hover: {
           z: 1.1,
@@ -87,11 +74,12 @@ export function Cone() {
   );
 }
 
-export function Torus() {
+function Torus() {
   return (
     <motion.mesh
       position={[0.1, 0.4, 0]}
       rotation={[-0.5, 0.5, 0]}
+      // @ts-ignore
       variants={{
         hover: {
           y: 0.5,
@@ -106,11 +94,12 @@ export function Torus() {
   );
 }
 
-export function Icosahedron() {
+function Icosahedron() {
   return (
     <motion.mesh
       position={[1.1, 0, 0]}
       rotation-z={0.5}
+      // @ts-ignore
       variants={{
         hover: {
           x: 1.8,
@@ -130,10 +119,14 @@ export function Material() {
   return <meshPhongMaterial color="#fff" specular="#61dafb" shininess={10} />;
 }
 
+interface CamType {
+  aspect: number | undefined
+}
+
 // Adapted from https://github.com/pmndrs/drei/blob/master/src/core/PerspectiveCamera.tsx
 function Camera({ mouseX, mouseY, ...props }: { mouseX: number, mouseY: number}) {
-  const cameraX = useSmoothTransform(mouseX, spring, (x: number) => x / 350);
-  const cameraY = useSmoothTransform(mouseY, spring, (y: number) => (-1 * y) / 350);
+  const cameraX = useSmoothTransform(mouseX, setting.SPRING, (x: number) => x / 350);
+  const cameraY = useSmoothTransform(mouseY, setting.SPRING, (y: number) => (-1 * y) / 350);
 
   const set = useThree(({ set }) => set);
   const camera = useThree(({ camera }) => camera);
@@ -144,7 +137,9 @@ function Camera({ mouseX, mouseY, ...props }: { mouseX: number, mouseY: number})
   useLayoutEffect(() => {
     const { current: cam } = cameraRef;
     if (cam) {
+      // @ts-ignore
       cam.aspect = size.width / size.height;
+      // @ts-ignore
       cam.updateProjectionMatrix();
     }
   }, [size, props]);
@@ -152,6 +147,7 @@ function Camera({ mouseX, mouseY, ...props }: { mouseX: number, mouseY: number})
   useLayoutEffect(() => {
     if (cameraRef.current) {
       const oldCam = camera;
+      // @ts-ignore
       set(() => ({ camera: cameraRef.current }));
       return () => set(() => ({ camera: oldCam }));
     }
@@ -159,17 +155,15 @@ function Camera({ mouseX, mouseY, ...props }: { mouseX: number, mouseY: number})
 
   useLayoutEffect(() => {
     return cameraX.onChange(() => camera.lookAt(scene.position));
+
   }, [cameraX]);
 
   return (
     <motion.perspectiveCamera
+      // @ts-ignore
       ref={cameraRef}
       fov={90}
       position={[cameraX, cameraY, 3.8]}
     />
   );
 }
-
-const spring = { stiffness: 600, damping: 30 };
-
-const mouseToLightRotation = (v) => (-1 * v) / 140;

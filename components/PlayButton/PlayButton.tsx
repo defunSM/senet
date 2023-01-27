@@ -1,9 +1,10 @@
+import { MotionConfig, motion, useMotionValue } from "framer-motion";
+import Link from 'next/link';
 import { Suspense, useState } from "react";
-import { motion, MotionConfig, useMotionValue } from "framer-motion";
-import { Shapes } from "./Shapes";
-import { transition } from "./Shapes";
 import useMeasure from "react-use-measure";
-import Link from 'next/link'
+import Shapes from "./Shapes";
+import setting from "./constants";
+
 
 export default function PlayApp() {
   const [ref, bounds] = useMeasure({ scroll: false });
@@ -18,7 +19,7 @@ export default function PlayApp() {
   };
 
   return (
-    <MotionConfig transition={transition}>
+    <MotionConfig transition={setting.TRANSITION}>
       <motion.button
         ref={ref}
         initial={false}
@@ -40,7 +41,7 @@ export default function PlayApp() {
         onTapStart={() => setIsPress(true)}
         onTap={() => setIsPress(false)}
         onTapCancel={() => setIsPress(false)}
-        onPointerMove={(e) => {
+        onPointerMove={(e: any) => {
           mouseX.set(e.clientX - bounds.x - bounds.width / 2);
           mouseY.set(e.clientY - bounds.y - bounds.height / 2);
         }}
