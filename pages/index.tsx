@@ -3,7 +3,6 @@ import Head from 'next/head'
 import PlayApp from './components/PlayButton'
 import Puzzle from './components/Puzzle'
 import SenetHeaderTitle from './components/SenetTitle'
-import Play from './play'
 const inter = Inter({ subsets: ['latin'], weight: '800' })
 // const roboto = Roboto({ weight: "700"})
 
